@@ -2,6 +2,7 @@ package com.example.administrator.mvpdemo.service;
 
 import android.content.Context;
 
+import com.example.administrator.mvpdemo.service.baseInterceptor.BaseNetInterceptor;
 import com.google.gson.GsonBuilder;
 
 
@@ -39,6 +40,13 @@ public class RetrofitHelper {
     }
 
     private void resetApp() {
+        /**
+         * 如果有固定参数请求的写法
+         */
+        /*OkHttpClient client = new OkHttpClient().newBuilder().
+                addInterceptor(new BaseNetInterceptor())
+                .build();*/
+
         mRetrofit = new Retrofit.Builder()
                 .baseUrl("https://api.douban.com/v2/")
                 .client(client)

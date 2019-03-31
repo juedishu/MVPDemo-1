@@ -11,8 +11,10 @@ import android.widget.Toast;
 import com.example.administrator.mvpdemo.R;
 import com.example.administrator.mvpdemo.service.RetrofitService;
 import com.example.administrator.mvpdemo.service.entity.Book;
+import com.example.administrator.mvpdemo.service.entity.Movies;
 import com.example.administrator.mvpdemo.service.presenter.BookPresenter;
 import com.example.administrator.mvpdemo.service.view.BookView;
+import com.example.administrator.mvpdemo.service.view.MovieView;
 import com.google.gson.GsonBuilder;
 
 import retrofit2.Call;
@@ -35,14 +37,15 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mBookPresenter.getSearchBooks("金瓶梅", null, 0, 1);
+//                mBookPresenter.getSearchBooks("金瓶梅", null, 0, 1);
+                mBookPresenter.getTopMovies(25,1);
             }
         });
         mBookPresenter.onCreate();
-        mBookPresenter.attachView(mBookView);
+        mBookPresenter.attachView(mMoviesView);
     }
 
-    private BookView mBookView = new BookView() {
+    /*private BookView mBookView = new BookView() {
         @Override
         public void onSuccess(Book mBook) {
             text.setText(mBook.toString());
@@ -52,7 +55,21 @@ public class MainActivity extends AppCompatActivity {
         public void onError(String result) {
             Toast.makeText(MainActivity.this,result, Toast.LENGTH_SHORT).show();
         }
+    };*/
+
+
+    private MovieView mMoviesView = new MovieView() {
+        @Override
+        public void onSuccess(Movies mMovies) {
+            text.setText(mMovies.toString());
+        }
+
+        @Override
+        public void onError(String result) {
+
+        }
     };
+
     @Override
     protected void onDestroy(){
         super.onDestroy();

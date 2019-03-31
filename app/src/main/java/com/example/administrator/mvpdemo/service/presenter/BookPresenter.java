@@ -6,10 +6,14 @@ import android.util.Log;
 
 
 import com.example.administrator.mvpdemo.service.entity.Book;
+import com.example.administrator.mvpdemo.service.entity.Movies;
 import com.example.administrator.mvpdemo.service.manager.DataManager;
 import com.example.administrator.mvpdemo.service.view.BookView;
+import com.example.administrator.mvpdemo.service.view.MovieView;
 import com.example.administrator.mvpdemo.service.view.View;
 
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -20,11 +24,14 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class BookPresenter implements Presenter {
-    private DataManager manager;
+    private DataManager  manager;
     private CompositeSubscription mCompositeSubscription;
     private Context mContext;
     private BookView mBookView;
+
+    private MovieView mMoviesView;
     private Book mBook;
+    private Movies mMovies;
     public BookPresenter (Context mContext){
         this.mContext = mContext;
     }
@@ -44,6 +51,8 @@ public class BookPresenter implements Presenter {
         if (mCompositeSubscription.hasSubscriptions()){
             mCompositeSubscription.unsubscribe();
         }
+        if(mBookView!=null)
+            mBookView = null;
     }
 
     @Override
@@ -53,13 +62,15 @@ public class BookPresenter implements Presenter {
 
     @Override
     public void attachView(View view) {
-        mBookView = (BookView)view;
+//        mBookView = (BookView)view;
+        mMoviesView = (MovieView) view;
     }
 
     @Override
     public void attachIncomingIntent(Intent intetn) {
 }
     public void getSearchBooks(String name,String tag,int start,int count){
+
         mCompositeSubscription.add(manager.getSearchBooks(name,tag,start,count)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -81,6 +92,34 @@ public class BookPresenter implements Presenter {
                     public void onNext(Book book) {
                         mBook = book;
                     }
+                })
+        );
+    }
+    public void getTopMovies(int start,int count){
+
+        mCompositeSubscription.add(manager.getTopMovies(start,count)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Movies>() {
+                    @Override
+                    public void onCompleted() {
+                        if (mMovies != null){
+                            mMoviesView.onSuccess(mMovies);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        mBookView.onError("请求失败！！");
+                    }
+
+                    @Override
+                    public void onNext(Movies movies) {
+                        mMovies = movies;
+                    }
+
+
                 })
         );
     }

@@ -446,3 +446,4 @@ public class MainActivity extends AppCompatActivity {
 
 ![演示](http://upload-images.jianshu.io/upload_images/3057657-ac0f5e24d5fdd501.gif?imageMogr2/auto-orient/strip)
 
+新增：拦截器，固定请求参数的Inceptor，修改原来调用的接口；
